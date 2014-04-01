@@ -56,9 +56,6 @@ handles.output = hObject;
 % Update handles structure
 guidata(hObject, handles);
 
-%% Get and display ISS latitude and longitude
-update_iss_coords(handles)
-
 %% Get target data from XML file
 
 % Assumes the XML file is in the same directory as this file.
@@ -135,6 +132,14 @@ end
 
 % By default, display details about the first target.
 set_curr_target(1, handles);
+axes('Units','Pixels','Position',[60,0,450,400], 'Visible', 'off');
+worldmap('world');
+geoshow('landareas.shp', 'FaceColor', [0.5 1.0 0.5]);
+handles.ax = gca
+guidata(hObject, handles);
+
+%% Get and display ISS latitude and longitude
+update_iss_coords(handles)
 
 function update_iss_coords(handles)
 %% Get latitude and longitude
@@ -155,6 +160,8 @@ longitude = long(1:end-1);
 if ~isempty(latitude)|| ~isempty(longitude)
     set(handles.input_lat,'string',{num2str(latitude)})
     set(handles.input_long,'string',{num2str(longitude)})
+    geoshow(gcm(handles.ax), 30, 45)%round(latitude), round(longitude), 'DisplayType', 'point', 'Color', 'red')
+    %geoshow(handles.ax, handles.input_lat, handles.input_long, 'DisplayType', 'point', 'Color', 'red')
 end
 
 function timer_callback(src,event,handles) %Timer function
@@ -249,4 +256,3 @@ function stop_iss_update_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 delete(handles.t)
-
