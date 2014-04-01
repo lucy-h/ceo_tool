@@ -137,12 +137,12 @@ end
 set_curr_target(1, handles);
 
 % Update coordinates continuously.
-handles.guifig = gcf;
 handles.t = timer('TimerFcn', {@timer_callback,handles.guifig}, 'ExecutionMode', 'fixedRate', 'Period', 1.0)
-guidata(handles.guifig,handles)
-guidata(hObject, handles)
+guidata(handles.guifig,handles);
+start(handles.t);
+guidata(hObject, handles);
 
-function update_iss_coords(handles)
+function update_iss_coords(varargin)
 %% Get latitude and longitude
 latlong=urlread('http://api.open-notify.org/iss-now.json');
 a=strsplit(latlong,'\n');
@@ -165,7 +165,9 @@ end
 
 function timer_callback(src,event,handles) %Timer function
 handles = guidata(handles);
-update_iss_coords(handles);
+x = myfunction(y);%define your function here 
+set(handles.edit1,'String',num2str(x)); %assuming x is 
+type 'double'
 guidata(handles.guifig, handles);
 
 
@@ -227,7 +229,6 @@ function update_iss_button_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 update_iss_coords(handles)
-start(handles.t);
 
 
 % --- Executes during object deletion, before destroying properties.
