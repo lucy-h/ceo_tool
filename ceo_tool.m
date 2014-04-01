@@ -62,7 +62,13 @@ update_iss_coords(handles)
 %% Get target data from XML file
 
 % Assumes the XML file is in the same directory as this file.
-xmlDoc = xmlread('EOSitesDaily.xml');
+prompt = {'Please choose a file to load:'};
+movegui('center')
+dlg_title = 'Select Target File';
+num_lines = 1;
+def = {''};
+answer = inputdlg(prompt,dlg_title,num_lines,def);
+xmlDoc = answer{1,1};;
 doc = xmlwrite(xmlDoc);
 a=strsplit(doc,{'<wmc__TEOSite Category="Daily"','</wmc__TEOSite>'});
 no_of_targets = (length(a)-1)/2;
