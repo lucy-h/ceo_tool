@@ -136,12 +136,6 @@ end
 % By default, display details about the first target.
 set_curr_target(1, handles);
 
-% Update coordinates continuously.
-handles.guifig = gcf;
-handles.t = timer('TimerFcn', {@timer_callback,handles.guifig}, 'ExecutionMode', 'fixedRate', 'Period', 1.0)
-guidata(handles.guifig,handles)
-guidata(hObject, handles)
-
 function update_iss_coords(handles)
 %% Get latitude and longitude
 latlong=urlread('http://api.open-notify.org/iss-now.json');
@@ -226,8 +220,12 @@ function update_iss_button_Callback(hObject, eventdata, handles)
 % hObject    handle to update_iss_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-update_iss_coords(handles)
-start(handles.t);
+% Update coordinates continuously.
+handles.guifig = gcf;
+handles.t = timer('TimerFcn', {@timer_callback,handles.guifig}, 'ExecutionMode', 'fixedRate', 'Period', 1.0)
+guidata(handles.guifig,handles)
+guidata(hObject, handles)
+start(handles.t)
 
 
 % --- Executes during object deletion, before destroying properties.
@@ -243,3 +241,12 @@ function input_long_ButtonDownFcn(hObject, eventdata, handles)
 % hObject    handle to input_long (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+
+
+% --- Executes on button press in stop_iss_update_button.
+function stop_iss_update_button_Callback(hObject, eventdata, handles)
+% hObject    handle to stop_iss_update_button (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+delete(handles.t)
+
