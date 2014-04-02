@@ -136,7 +136,6 @@ set_curr_target(1, handles);
 axes('Units','Pixels','Position',[60,0,450,400], 'Visible', 'off');
 worldmap('world');
 geoshow('landareas.shp', 'FaceColor', [0.5 1.0 0.5]);
-geoshow(0,0, 'DisplayType', 'point', 'Color', 'red');
 guidata(hObject, handles);
 
 %% Get and display ISS latitude and longitude
