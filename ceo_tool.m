@@ -133,9 +133,11 @@ end
 % By default, display details about the first target.
 set_curr_target(1, handles);
 
-axes('Units','Pixels','Position',[60,0,450,400], 'Visible', 'off');
+axes('Units','Pixels','Position',[150,295,450,400], 'Visible', 'off');
 worldmap('world');
 geoshow('landareas.shp', 'FaceColor', [0.5 1.0 0.5]);
+% D:\Documents\ceo_tool-master\ceo_tool-master\EOSitesDaily.xml
+
 guidata(hObject, handles);
 
 %% Get and display ISS latitude and longitude
@@ -144,22 +146,20 @@ update_iss_coords(handles)
 function update_iss_coords(handles)
 %% Get latitude and longitude
 latlong=urlread('http://api.open-notify.org/iss-now.json');
-a=strsplit(latlong,'\n');
 
-latstr = char(a(5));
-latarr = strsplit(latstr);
-lat = char(latarr(3));
-latitude = lat(1:end-1);
+latarr = strsplit(latlong,{'"longitude":',','});
+latstr = char(latarr(2));
+latitude = latstr(1:10);
 
-longstr = char(a(4));
-longarr = strsplit(longstr);
-long = char(longarr(3));
-longitude = long(1:end-1);
+longarr = strsplit(latlong,{'"latitude":','}'});
+longstr = char(longarr(2));
+longitude = longstr(1:10);
 
 % Display the ISS coordinates.
 if ~isempty(latitude)|| ~isempty(longitude)
     set(handles.input_lat,'string',{num2str(latitude)})
     set(handles.input_long,'string',{num2str(longitude)})
+    %{
     axes('Units','Pixels','Position',[60,0,450,400], 'Visible', 'off');
     worldmap('world');
     geoshow('landareas.shp', 'FaceColor', [0.5 1.0 0.5]);
@@ -168,6 +168,7 @@ if ~isempty(latitude)|| ~isempty(longitude)
     geoshow(roundlat, roundlong, 'DisplayType', 'point', 'Color', 'red');
     %geoshow(gcm(handles.ax), 30, 45)%round(latitude), round(longitude), 'DisplayType', 'point', 'Color', 'red')
     %geoshow(handles.ax, handles.input_lat, handles.input_long, 'DisplayType', 'point', 'Color', 'red')
+    %}
 end
 
 function timer_callback(src,event,handles) %Timer function
@@ -235,7 +236,7 @@ function update_iss_button_Callback(hObject, eventdata, handles)
 % handles    structure with handles and user data (see GUIDATA)
 % Update coordinates continuously.
 handles.guifig = gcf;
-handles.t = timer('TimerFcn', {@timer_callback,handles.guifig}, 'ExecutionMode', 'fixedRate', 'Period', 1.0)
+handles.t = timer('TimerFcn', {@timer_callback,handles.guifig}, 'ExecutionMode', 'fixedRate', 'Period', 5.0);
 guidata(handles.guifig,handles)
 guidata(hObject, handles)
 start(handles.t)
